@@ -1,3 +1,23 @@
+# InsightGen
+
+## Overview
+
+InsightGen is a serverless application designed to provide comprehensive business insights from structured data. It uses AWS Lambda, DynamoDB, and a Vue.js frontend with Apollo Client.
+
+## Project Structure
+
+- `backend/` - Contains AWS SAM configuration and Lambda function code.
+- `frontend/` - Contains Vue.js application with Apollo Client.
+
+## Backend Setup
+
+1. Install AWS SAM CLI and AWS CLI.
+2. Package and deploy the backend using AWS SAM:
+   ```bash
+   cd backend
+   sam package --template-file template.yaml --s3-bucket your-s3-bucket-name --output-template-file packaged.yaml
+   sam deploy --template-file packaged.yaml --stack-name insightgen-stack --capabilities CAPABILITY_IAM
+
 # InsightGen Project Description
 InsightGen is an advanced serverless application designed to deliver actionable business insights from   raw data. Leveraging the power of AWS services and modern frontend technologies, InsightGen provides a   comprehensive solution for business intelligence and data visualization.
 

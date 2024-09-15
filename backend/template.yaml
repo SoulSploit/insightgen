@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  InsightFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.8
+      MemorySize: 1024
+      Timeout: 60
+      CodeUri: s3://your-s3-bucket/my-code.zip
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref InsightsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref InsightsTable
+
+  InsightsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: 'InsightsTable'
+      AttributeDefinitions:
+        - AttributeName: 'PK'
+          AttributeType: 'S'
+        - AttributeName: 'SK'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'PK'
+          KeyType: 'HASH'
+        - AttributeName: 'SK'
+          KeyType: 'RANGE'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  ApiGateway:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: 'Prod'
+      DefinitionBody:
+        swagger: '2.0'
+        paths:
+          /api/v1/insights:
+            get:
+              x-amazon-apigateway-integration:
+                type: 'aws_proxy'
+                httpMethod: 'POST'
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${InsightFunction.Arn}/invocations'
+              responses: {}
