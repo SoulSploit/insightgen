@@ -1,25 +1,36 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+  StageName:
+    Type: String
+    Default: 'Prod'
+    Description: 'The stage name for the API Gateway'
+
+  TableName:
+    Type: String
+    Default: 'InsightsTable'
+    Description: 'The name of the DynamoDB table'
+
 Resources:
   InsightFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
-      Runtime: python3.8
+      Runtime: python3.9  # Updated to Python 3.9
       MemorySize: 1024
       Timeout: 60
       CodeUri: s3://your-s3-bucket/my-code.zip
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref InsightsTable
+            TableName: !Ref TableName
       Environment:
         Variables:
-          TABLE_NAME: !Ref InsightsTable
+          TABLE_NAME: !Ref TableName
 
   InsightsTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: 'InsightsTable'
+      TableName: !Ref TableName
       AttributeDefinitions:
         - AttributeName: 'PK'
           AttributeType: 'S'
@@ -30,21 +41,29 @@ Resources:
           KeyType: 'HASH'
         - AttributeName: 'SK'
           KeyType: 'RANGE'
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      BillingMode: PAY_PER_REQUEST
+      # Considered using PAY_PER_REQUEST mode for scalability and cost-effectiveness
 
   ApiGateway:
     Type: 'AWS::Serverless::Api'
     Properties:
-      StageName: 'Prod'
+      StageName: !Ref StageName
       DefinitionBody:
-        swagger: '2.0'
+        openapi: 3.0.1
+        info:
+          title: 'Insights API'
+          version: '1.0'
         paths:
           /api/v1/insights:
             get:
+              summary: 'Retrieve insights'
+              operationId: 'getInsights'
               x-amazon-apigateway-integration:
                 type: 'aws_proxy'
-                httpMethod: 'POST'
+                httpMethod: 'POST'  # Ensure this matches your Lambda function's method
                 uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${InsightFunction.Arn}/invocations'
-              responses: {}
+              responses:
+                '200':
+                  description: 'Successful response'
+                '500':
+                  description: 'Server error'
