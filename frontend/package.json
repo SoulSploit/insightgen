@@ -1,24 +1,43 @@
 {
-    "name": "frontend",
-    "version": "1.0.0",
-    "main": "index.js",
-    "dependencies": {
-      "@apollo/client": "^3.5.10",
-      "graphql": "^15.6.0",
-      "vue": "^3.2.31",
-      "vue-apollo": "^4.0.0-beta.16",
-      "vue-router": "^4.1.6"
-    },
-    "devDependencies": {
-      "@vue/cli-plugin-babel": "^5.0.4",
-      "@vue/cli-plugin-eslint": "^5.0.4",
-      "@vue/cli-service": "^5.0.4",
-      "eslint": "^8.0.0",
-      "eslint-plugin-vue": "^8.0.0"
-    },
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "lint": "vue-cli-service lint"
-    }
-  }  
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "A Vue.js frontend application with Apollo Client integration",
+  "main": "index.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "test": "echo \"No tests specified\" && exit 1"  // Placeholder for adding unit tests in the future
+  },
+  "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "graphql": "^15.6.0",
+    "vue": "^3.2.31",
+    "vue-apollo": "^4.0.0-beta.16",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^5.0.4",
+    "@vue/cli-plugin-eslint": "^5.0.4",
+    "@vue/cli-service": "^5.0.4",
+    "eslint": "^8.0.0",
+    "eslint-plugin-vue": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"  // Ensure compatibility with Node.js versions 14.x and above
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not ie <= 11"  // Exclude Internet Explorer 11 from production builds
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"  // Support the latest versions of major browsers during development
+    ]
+  },
+  "author": "VjjvR",
+  "license": "MIT"  // Open source license; adjust if using a different license
+}
